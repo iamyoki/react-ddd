@@ -23,7 +23,7 @@ export class TodoListAggregate {
   addItem(title) {
     const newTodoItem = new TodoItem();
     newTodoItem.updateTitle(title);
-    this.todoItems.push(newTodoItem);
+    this.todoItems = this.todoItems.concat(newTodoItem);
   }
 
   removeItem(itemId) {
@@ -40,5 +40,39 @@ export class TodoListAggregate {
     this.todoItems = this.todoItems.map((item) =>
       item.id === itemId ? { ...item, completed: !item.completed } : item
     );
+  }
+
+  reset() {
+    this.todoItems = [];
+  }
+}
+
+export class TodoListApplicationAggregate {
+  id = uuid();
+
+  /**@type {TodoListAggregate[]} */
+  todoLists = [];
+
+  /**@type {TodoListAggregate[]} */
+  removedLists = [];
+
+  addList(todoList) {
+    this.todoLists = this.todoLists.concat(todoList);
+  }
+
+  removeList(id) {
+    const found = this.todoLists.find((list) => list.id === id);
+    
+    this.removedLists = this.removedLists.concat(found);
+    this.todoLists = this.todoLists.filter((list) => list !== found);
+  }
+
+  restoreLast() {
+    const last = this.removedLists.at(-1);
+    
+    if (last) {
+      this.removedLists = this.removedLists.slice(0, -1);
+      this.todoLists = this.todoLists.concat(last);
+    }
   }
 }

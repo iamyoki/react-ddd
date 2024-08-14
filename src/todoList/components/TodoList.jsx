@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { TodoListAggregate } from "../domain/TodoList";
 
 function Todo({
   title = "",
@@ -27,23 +26,23 @@ function Todo({
   );
 }
 
-export function TodoList() {
-  const todoListRef = useRef(new TodoListAggregate());
-  const [todoList, setTodoList] = useState([]);
+export function TodoList({ todoListAggregate, onRemove }) {
+  const todoListRef = useRef(todoListAggregate);
+  const [todoList, setTodoList] = useState(todoListRef.current.todoItems);
 
   function addTodo() {
     todoListRef.current.addItem();
-    setTodoList([...todoListRef.current.todoItems]);
+    setTodoList(todoListRef.current.todoItems);
   }
 
   function updateTitle(id, title) {
     todoListRef.current.updateItemTitle(id, title);
-    setTodoList([...todoListRef.current.todoItems]);
+    setTodoList(todoListRef.current.todoItems);
   }
 
   function toggleCompletion(id) {
     todoListRef.current.toggleItemCompletion(id);
-    setTodoList([...todoListRef.current.todoItems]);
+    setTodoList(todoListRef.current.todoItems);
   }
 
   return (
@@ -70,6 +69,14 @@ export function TodoList() {
         }}
       >
         Add
+      </button>
+
+      <button
+        onClick={() => {
+          onRemove();
+        }}
+      >
+        Remove And Close
       </button>
     </div>
   );
