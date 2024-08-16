@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { TodoListAggregate } from "../domain/TodoListAggregate";
 
 function Todo({
   title = "",
@@ -26,32 +27,32 @@ function Todo({
   );
 }
 
-export function TodoList({ todoListAggregate, onRemove }) {
-  const todoListRef = useRef(todoListAggregate);
-  const [todoList, setTodoList] = useState(todoListRef.current.todoItems);
+export function TodoList({ todoListAggregate }) {
+  const todoListRef = useRef(todoListAggregate ?? new TodoListAggregate());
+  const [todos, setTodos] = useState(todoListRef.current.todos);
 
   function addTodo() {
-    todoListRef.current.addItem();
-    setTodoList(todoListRef.current.todoItems);
+    todoListRef.current.addTodo();
+    setTodos(todoListRef.current.todos);
   }
 
   function updateTitle(id, title) {
-    todoListRef.current.updateItemTitle(id, title);
-    setTodoList(todoListRef.current.todoItems);
+    todoListRef.current.updateTodoTitle(id, title);
+    setTodos(todoListRef.current.todos);
   }
 
   function toggleCompletion(id) {
-    todoListRef.current.toggleItemCompletion(id);
-    setTodoList(todoListRef.current.todoItems);
+    todoListRef.current.toggleTodoCompletion(id);
+    setTodos(todoListRef.current.todos);
   }
 
   return (
     <div>
       <ul>
-        {todoList.map((todo) => (
+        {todos.map((todo) => (
           <Todo
             key={todo.id}
-            title={todo.title}
+            title={todo.title.title}
             completed={todo.completed}
             onUpdateTitle={(title) => {
               updateTitle(todo.id, title);
@@ -68,15 +69,7 @@ export function TodoList({ todoListAggregate, onRemove }) {
           addTodo();
         }}
       >
-        Add
-      </button>
-
-      <button
-        onClick={() => {
-          onRemove();
-        }}
-      >
-        Remove And Close
+        Add Todo
       </button>
     </div>
   );
