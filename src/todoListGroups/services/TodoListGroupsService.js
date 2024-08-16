@@ -24,7 +24,7 @@ export class TodoListGroupsService {
     const todoListGroups =
       this.todoListGroupsRepository.findById(todoListGroupsId);
     if (!todoListGroups) throw new Error("todoListGroups not found");
-    return todoListGroups
+    return todoListGroups;
   }
 
   addGroup(todoListGroupsId) {
@@ -33,8 +33,9 @@ export class TodoListGroupsService {
     if (!todoListGroups) throw new Error("todoListGroups not found");
 
     const todoList = this.todoListService.create();
-    todoListGroups.addGroup(todoList.id);
+    const newGroup = todoListGroups.addGroup(todoList.id);
     this.todoListGroupsRepository.save(todoListGroups);
+    return newGroup;
   }
 
   removeGroup(todoListGroupsId, groupId) {

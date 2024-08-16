@@ -23,7 +23,7 @@ export class Todo {
   title = new Title();
   completed = false;
 
-  constructor(title) {
+  constructor(title = "") {
     this.title = new Title(title);
   }
 
@@ -40,8 +40,8 @@ export class TodoListAggregate {
   id = nanoid();
   todos = [];
 
-  addTodo() {
-    const newTodo = new Todo("");
+  addTodo(title) {
+    const newTodo = new Todo(title);
     this.todos = this.todos.concat(newTodo);
   }
 

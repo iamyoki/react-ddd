@@ -4,6 +4,7 @@ import { TodoListService } from "./todoList/services/TodoListService";
 import { TodoListGroups } from "./todoListGroups/components/TodoListGroups";
 import { TodoListGroupsInMemoryRepository } from "./todoListGroups/infrastructure/TodoListGroupsInMemoryRepository";
 import { TodoListGroupsService } from "./todoListGroups/services/TodoListGroupsService";
+import { todoListGroupsREPL } from "./todoListGroups/todoListGroupsREPL";
 
 // repositories
 const todoListRepository = new TodoListInMemoryRepository();
@@ -17,6 +18,11 @@ const todoListGroupsService = new TodoListGroupsService(
 );
 
 const todoListGroups = todoListGroupsService.create();
+
+window.todoListGroupsREPL = todoListGroupsREPL(
+  todoListGroupsService,
+  todoListService
+);
 
 function App() {
   return (

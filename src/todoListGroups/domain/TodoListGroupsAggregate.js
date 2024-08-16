@@ -18,12 +18,14 @@ export class TodoListGroupsAggregate {
   addGroup(todoListId) {
     const group = new Group(todoListId);
     this.groups = this.groups.concat(group);
+    return group
   }
 
   removeGroup(groupId) {
     const target = this.groups.find((g) => g.id === groupId);
     this.groups = this.groups.filter((g) => g !== target);
     this.removedGroups = this.removedGroups.concat(target);
+    return target
   }
 
   removeAllGroups() {
