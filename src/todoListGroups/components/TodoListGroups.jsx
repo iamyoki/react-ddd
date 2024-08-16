@@ -1,54 +1,42 @@
 import { useEffect, useRef, useState } from "react";
 import { TodoList } from "../../todoList/components/TodoList";
-import { TodoListAggregate } from "../../todoList/domain/TodoListAggregate";
 import { TodoListGroupsAggregate } from "../domain/TodoListGroupsAggregate";
 
-export function TodoListGroups({
-  id,
-  todoListGroupsRepository,
-  todoListRepository,
-}) {
+export function TodoListGroups({ id, todoListGroupsService, todoListService }) {
   const todoListGroupsRef = useRef(new TodoListGroupsAggregate());
   const [groups, setGroups] = useState(todoListGroupsRef.current.groups);
 
   // initial from repository
   useEffect(() => {
-    if (!todoListGroupsRepository) return;
-    const todoListGroups = todoListGroupsRepository.findById(id);
+    if (!todoListGroupsService) return;
+    const todoListGroups = todoListGroupsService.findById(id);
     todoListGroupsRef.current = todoListGroups;
     setGroups(todoListGroups.groups);
-  }, [id, todoListGroupsRepository]);
-
-  function save() {
-    setGroups(todoListGroupsRef.current.groups);
-    todoListGroupsRepository?.save(todoListGroupsRef.current);
-  }
+  }, [id, todoListGroupsService]);
 
   function handleClickAdd() {
-    const newTodoList = new TodoListAggregate();
-    todoListRepository.save(newTodoList);
-    todoListGroupsRef.current.addGroup(newTodoList.id);
-    save();
+    todoListGroupsService.addGroup(id);
+    setGroups(todoListGroupsRef.current.groups);
   }
 
   function handleClickRemoveGroup(groupId) {
-    todoListGroupsRef.current.removeGroup(groupId);
-    save();
+    todoListGroupsService.removeGroup(id, groupId);
+    setGroups(todoListGroupsRef.current.groups);
   }
 
   function handleClickRemoveAllTodoList() {
-    todoListGroupsRef.current.removeAllGroups();
-    save();
+    todoListGroupsService.removeAllGroups(id);
+    setGroups(todoListGroupsRef.current.groups);
   }
 
   function handleClickRestoreAllRemoved() {
-    todoListGroupsRef.current.restoreAllRemovedGroups();
-    save();
+    todoListGroupsService.restoreAllRemovedGroups(id);
+    setGroups(todoListGroupsRef.current.groups);
   }
 
   function handleClickRestoreLastRemoved() {
-    todoListGroupsRef.current.restoreLastRemovedGroup();
-    save();
+    todoListGroupsService.restoreLastRemovedGroup(id);
+    setGroups(todoListGroupsRef.current.groups);
   }
 
   return (
@@ -68,10 +56,7 @@ export function TodoListGroups({
                 Remove Group
               </button>
             </h2>
-            <TodoList
-              id={group.todoListId}
-              todoListRepository={todoListRepository}
-            />
+            <TodoList id={group.todoListId} todoListService={todoListService} />
           </div>
         ))}
       </div>

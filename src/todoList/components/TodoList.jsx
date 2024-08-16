@@ -27,38 +27,33 @@ function Todo({
   );
 }
 
-export function TodoList({ id, todoListRepository }) {
+export function TodoList({ id, todoListService }) {
   const todoListRef = useRef(new TodoListAggregate());
   const [todos, setTodos] = useState(todoListRef.current.todos);
 
-  // initial from repository
+  // init
   useEffect(() => {
-    if (!todoListRepository) return;
-    const todoList = todoListRepository.findById(id);
+    if (!todoListService) return;
+    const todoList = todoListService.findById(id);
     if (todoList) {
       todoListRef.current = todoList;
       setTodos(todoList.todos);
     }
-  }, [id, todoListRepository]);
-
-  function save() {
-    setTodos(todoListRef.current.todos);
-    todoListRepository?.save(todoListRef.current);
-  }
+  }, [id, todoListService]);
 
   function addTodo() {
-    todoListRef.current.addTodo();
-    save();
+    todoListService.addTodo(id, "");
+    setTodos(todoListRef.current.todos);
   }
 
-  function updateTitle(id, title) {
-    todoListRef.current.updateTodoTitle(id, title);
-    save();
+  function updateTitle(todoId, title) {
+    todoListService.updateTodoTitle(id, todoId, title);
+    setTodos(todoListRef.current.todos);
   }
 
-  function toggleCompletion(id) {
-    todoListRef.current.toggleTodoCompletion(id);
-    save();
+  function toggleCompletion(todoId) {
+    todoListService.toggleTodoCompletion(id, todoId);
+    setTodos(todoListRef.current.todos);
   }
 
   return (

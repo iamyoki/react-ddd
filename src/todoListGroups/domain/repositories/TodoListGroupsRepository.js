@@ -1,6 +1,6 @@
 export class TodoListGroupsRepository {
-  save(todoListGroup) {}
+  save(todoListGroups) {}
   findAll() {}
-  findById(todoListGroupId) {}
-  removeById(todoListGroupId) {}
+  findById(todoListGroupsId) {}
+  removeById(todoListGroupsId) {}
 }
