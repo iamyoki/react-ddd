@@ -1,20 +1,12 @@
 import { TodoListRepository } from "../domain/repositories/TodoListRepository";
-import { TodoListAggregate } from "../domain/TodoListAggregate";
 
 /**@implements {TodoListRepository} */
 export class TodoListInMemoryRepository {
   store = new Map();
 
-  add(todoList) {
+  save(todoList) {
     this.store.set(todoList.id, todoList);
     return todoList;
-  }
-
-  update(todoList) {
-    if (this.store.has(todoList.id)) {
-      this.store.set(todoList.id, todoList);
-      return todoList;
-    }
   }
 
   findAll() {
@@ -22,7 +14,7 @@ export class TodoListInMemoryRepository {
   }
 
   findById(todoListId) {
-    return this.store.get(todoListId)
+    return this.store.get(todoListId);
   }
 
   removeById(todoListId) {

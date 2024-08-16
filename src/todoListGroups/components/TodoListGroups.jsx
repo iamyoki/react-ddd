@@ -1,29 +1,54 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TodoList } from "../../todoList/components/TodoList";
-import { TodoListGroupsAggregate } from "../domain/TodoListGroupsAggregate";
-import { TodoListInMemoryRepository } from "../../todoList/infrastructure/TodoListInMemoryRepository";
 import { TodoListAggregate } from "../../todoList/domain/TodoListAggregate";
+import { TodoListGroupsAggregate } from "../domain/TodoListGroupsAggregate";
 
-export function TodoListGroups() {
+export function TodoListGroups({
+  id,
+  todoListGroupsRepository,
+  todoListRepository,
+}) {
   const todoListGroupsRef = useRef(new TodoListGroupsAggregate());
-  const todoListInMemoryRepository = useRef(new TodoListInMemoryRepository());
   const [groups, setGroups] = useState(todoListGroupsRef.current.groups);
+
+  // initial from repository
+  useEffect(() => {
+    if (!todoListGroupsRepository) return;
+    const todoListGroups = todoListGroupsRepository.findById(id);
+    todoListGroupsRef.current = todoListGroups;
+    setGroups(todoListGroups.groups);
+  }, [id, todoListGroupsRepository]);
+
+  function save() {
+    setGroups(todoListGroupsRef.current.groups);
+    todoListGroupsRepository?.save(todoListGroupsRef.current);
+  }
 
   function handleClickAdd() {
     const newTodoList = new TodoListAggregate();
-    todoListInMemoryRepository.current.add(newTodoList);
+    todoListRepository.save(newTodoList);
     todoListGroupsRef.current.addGroup(newTodoList.id);
-    setGroups(todoListGroupsRef.current.groups);
+    save();
+  }
+
+  function handleClickRemoveGroup(groupId) {
+    todoListGroupsRef.current.removeGroup(groupId);
+    save();
   }
 
   function handleClickRemoveAllTodoList() {
     todoListGroupsRef.current.removeAllGroups();
-    setGroups(todoListGroupsRef.current.groups);
+    save();
   }
 
   function handleClickRestoreAllRemoved() {
     todoListGroupsRef.current.restoreAllRemovedGroups();
-    setGroups(todoListGroupsRef.current.groups);
+    save();
+  }
+
+  function handleClickRestoreLastRemoved() {
+    todoListGroupsRef.current.restoreLastRemovedGroup();
+    save();
   }
 
   return (
@@ -37,11 +62,15 @@ export function TodoListGroups() {
       >
         {groups.map((group) => (
           <div key={group.id}>
-            <h2>{group.groupTitle}</h2>
+            <h2>
+              {group.groupTitle}{" "}
+              <button onClick={() => handleClickRemoveGroup(group.id)}>
+                Remove Group
+              </button>
+            </h2>
             <TodoList
-              todoListAggregate={todoListInMemoryRepository.current.findById(
-                group.todoListId
-              )}
+              id={group.todoListId}
+              todoListRepository={todoListRepository}
             />
           </div>
         ))}
@@ -63,6 +92,9 @@ export function TodoListGroups() {
         </button>
         <button onClick={handleClickRestoreAllRemoved}>
           Restore All Removed
+        </button>
+        <button onClick={handleClickRestoreLastRemoved}>
+          Restore Last Removed
         </button>
       </div>
     </div>

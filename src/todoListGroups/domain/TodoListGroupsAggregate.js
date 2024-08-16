@@ -33,7 +33,9 @@ export class TodoListGroupsAggregate {
 
   restoreLastRemovedGroup() {
     const target = this.removedGroups.pop();
-    this.groups = this.groups.concat(target);
+    if (target) {
+      this.groups = this.groups.concat(target);
+    }
   }
 
   restoreAllRemovedGroups() {

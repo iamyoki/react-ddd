@@ -1,6 +1,5 @@
 export class TodoListRepository {
-  add(todoList) {}
-  update(todoList) {}
+  save(todoList) {}
   findAll() {}
   findById(todoListId) {}
   removeById(todoListId) {}
