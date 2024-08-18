@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { TodoListAggregate } from "../domain/TodoListAggregate";
+import { useEffect, useState } from "react";
 
 function Todo({
   title = "",
@@ -28,32 +27,31 @@ function Todo({
 }
 
 export function TodoList({ id, todoListService }) {
-  const todoListRef = useRef(new TodoListAggregate());
-  const [todos, setTodos] = useState(todoListRef.current.todos);
+  const [todos, setTodos] = useState([]);
 
   // init
   useEffect(() => {
     if (!todoListService) return;
-    const todoList = todoListService.findById(id);
-    if (todoList) {
-      todoListRef.current = todoList;
-      setTodos(todoList.todos);
-    }
+    todoListService.findById(id).then((todoList) => {
+      if (todoList) {
+        setTodos(todoList.todos);
+      }
+    });
   }, [id, todoListService]);
 
-  function addTodo() {
-    todoListService.addTodo(id, "");
-    setTodos(todoListRef.current.todos);
+  async function addTodo() {
+    const todoList = await todoListService.addTodo(id, "");
+    if (todoList) setTodos(todoList.todos);
   }
 
-  function updateTitle(todoId, title) {
-    todoListService.updateTodoTitle(id, todoId, title);
-    setTodos(todoListRef.current.todos);
+  async function updateTitle(todoId, title) {
+    const todoList = await todoListService.updateTodoTitle(id, todoId, title);
+    if (todoList) setTodos(todoList.todos);
   }
 
-  function toggleCompletion(todoId) {
-    todoListService.toggleTodoCompletion(id, todoId);
-    setTodos(todoListRef.current.todos);
+  async function toggleCompletion(todoId) {
+    const todoList = await todoListService.toggleTodoCompletion(id, todoId);
+    if (todoList) setTodos(todoList.todos);
   }
 
   return (

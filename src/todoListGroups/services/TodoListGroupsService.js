@@ -14,63 +14,80 @@ export class TodoListGroupsService {
     this.todoListService = todoListService;
   }
 
-  create() {
+  async create() {
     const todoListGroups = new TodoListGroupsAggregate();
-    this.todoListGroupsRepository.save(todoListGroups);
+    await this.todoListGroupsRepository.save(todoListGroups);
     return todoListGroups;
   }
 
-  findById(todoListGroupsId) {
-    const todoListGroups =
-      this.todoListGroupsRepository.findById(todoListGroupsId);
+  async ensureFirstOne() {
+    const all = await this.todoListGroupsRepository.findAll();
+    if (all?.[0]) return all[0];
+
+    return this.create();
+  }
+
+  async findById(todoListGroupsId) {
+    const todoListGroups = await this.todoListGroupsRepository.findById(
+      todoListGroupsId
+    );
     if (!todoListGroups) throw new Error("todoListGroups not found");
     return todoListGroups;
   }
 
-  addGroup(todoListGroupsId) {
-    const todoListGroups =
-      this.todoListGroupsRepository.findById(todoListGroupsId);
+  async addGroup(todoListGroupsId) {
+    const todoListGroups = await this.todoListGroupsRepository.findById(
+      todoListGroupsId
+    );
     if (!todoListGroups) throw new Error("todoListGroups not found");
 
-    const todoList = this.todoListService.create();
-    const newGroup = todoListGroups.addGroup(todoList.id);
-    this.todoListGroupsRepository.save(todoListGroups);
-    return newGroup;
+    const todoList = await this.todoListService.create();
+    todoListGroups.addGroup(todoList.id);
+    await this.todoListGroupsRepository.save(todoListGroups);
+    return todoListGroups;
   }
 
-  removeGroup(todoListGroupsId, groupId) {
-    const todoListGroups =
-      this.todoListGroupsRepository.findById(todoListGroupsId);
+  async removeGroup(todoListGroupsId, groupId) {
+    const todoListGroups = await this.todoListGroupsRepository.findById(
+      todoListGroupsId
+    );
     if (!todoListGroups) throw new Error("todoListGroups not found");
 
     todoListGroups.removeGroup(groupId);
-    this.todoListGroupsRepository.save(todoListGroups);
+    await this.todoListGroupsRepository.save(todoListGroups);
+    return todoListGroups;
   }
 
-  removeAllGroups(todoListGroupsId) {
-    const todoListGroups =
-      this.todoListGroupsRepository.findById(todoListGroupsId);
+  async removeAllGroups(todoListGroupsId) {
+    const todoListGroups = await this.todoListGroupsRepository.findById(
+      todoListGroupsId
+    );
     if (!todoListGroups) throw new Error("todoListGroups not found");
 
     todoListGroups.removeAllGroups();
-    this.todoListGroupsRepository.save(todoListGroups);
+    await this.todoListGroupsRepository.save(todoListGroups);
+    return todoListGroups;
   }
 
-  restoreAllRemovedGroups(todoListGroupsId) {
-    const todoListGroups =
-      this.todoListGroupsRepository.findById(todoListGroupsId);
+  async restoreAllRemovedGroups(todoListGroupsId) {
+    const todoListGroups = await this.todoListGroupsRepository.findById(
+      todoListGroupsId
+    );
     if (!todoListGroups) throw new Error("todoListGroups not found");
 
     todoListGroups.restoreAllRemovedGroups();
-    this.todoListGroupsRepository.save(todoListGroups);
+    await this.todoListGroupsRepository.save(todoListGroups);
+    return todoListGroups;
   }
 
-  restoreLastRemovedGroup(todoListGroupsId) {
-    const todoListGroups =
-      this.todoListGroupsRepository.findById(todoListGroupsId);
+  async restoreLastRemovedGroup(todoListGroupsId) {
+    const todoListGroups = await this.todoListGroupsRepository.findById(
+      todoListGroupsId
+    );
     if (!todoListGroups) throw new Error("todoListGroups not found");
 
     todoListGroups.restoreLastRemovedGroup();
-    this.todoListGroupsRepository.save(todoListGroups);
+    await this.todoListGroupsRepository.save(todoListGroups);
+    return todoListGroups;
   }
 }

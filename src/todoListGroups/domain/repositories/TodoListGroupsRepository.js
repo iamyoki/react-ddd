@@ -1,6 +1,6 @@
 export class TodoListGroupsRepository {
-  save(todoListGroups) {}
-  findAll() {}
-  findById(todoListGroupsId) {}
-  removeById(todoListGroupsId) {}
+  async save(todoListGroups) {}
+  async findAll() {}
+  async findById(todoListGroupsId) {}
+  async removeById(todoListGroupsId) {}
 }

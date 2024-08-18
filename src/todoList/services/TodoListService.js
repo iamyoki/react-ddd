@@ -9,36 +9,39 @@ export class TodoListService {
     this.todoListRepository = todoListRepository;
   }
 
-  create() {
+  async create() {
     const todoList = new TodoListAggregate();
-    this.todoListRepository.save(todoList);
+    await this.todoListRepository.save(todoList);
     return todoList;
   }
 
-  findById(todoListId) {
-    const todoList = this.todoListRepository.findById(todoListId);
+  async findById(todoListId) {
+    const todoList = await this.todoListRepository.findById(todoListId);
     if (!todoList) throw new Error("TodoList not found");
     return todoList;
   }
 
-  addTodo(todoListId, title) {
-    const todoList = this.todoListRepository.findById(todoListId);
+  async addTodo(todoListId, title) {
+    const todoList = await this.todoListRepository.findById(todoListId);
     if (!todoList) throw new Error("TodoList not found");
     todoList.addTodo(title);
-    this.todoListRepository.save(todoList);
+    await this.todoListRepository.save(todoList);
+    return todoList;
   }
 
-  updateTodoTitle(todoListId, todoId, newTitle) {
-    const todoList = this.todoListRepository.findById(todoListId);
+  async updateTodoTitle(todoListId, todoId, newTitle) {
+    const todoList = await this.todoListRepository.findById(todoListId);
     if (!todoList) throw new Error("TodoList not found");
     todoList.updateTodoTitle(todoId, newTitle);
-    this.todoListRepository.save(todoList);
+    await this.todoListRepository.save(todoList);
+    return todoList;
   }
 
-  toggleTodoCompletion(todoListId, todoId) {
-    const todoList = this.todoListRepository.findById(todoListId);
+  async toggleTodoCompletion(todoListId, todoId) {
+    const todoList = await this.todoListRepository.findById(todoListId);
     if (!todoList) throw new Error("TodoList not found");
     todoList.toggleTodoCompletion(todoId);
-    this.todoListRepository.save(todoList);
+    await this.todoListRepository.save(todoList);
+    return todoList;
   }
 }

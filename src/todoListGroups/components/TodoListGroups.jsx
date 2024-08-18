@@ -1,42 +1,44 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { TodoList } from "../../todoList/components/TodoList";
-import { TodoListGroupsAggregate } from "../domain/TodoListGroupsAggregate";
 
 export function TodoListGroups({ id, todoListGroupsService, todoListService }) {
-  const todoListGroupsRef = useRef(new TodoListGroupsAggregate());
-  const [groups, setGroups] = useState(todoListGroupsRef.current.groups);
+  const [groups, setGroups] = useState([]);
 
   // initial from repository
   useEffect(() => {
     if (!todoListGroupsService) return;
-    const todoListGroups = todoListGroupsService.findById(id);
-    todoListGroupsRef.current = todoListGroups;
-    setGroups(todoListGroups.groups);
+    todoListGroupsService.findById(id).then((todoListGroups) => {
+      setGroups(todoListGroups.groups);
+    });
   }, [id, todoListGroupsService]);
 
-  function handleClickAdd() {
-    todoListGroupsService.addGroup(id);
-    setGroups(todoListGroupsRef.current.groups);
+  async function handleClickAdd() {
+    const todoListGroups = await todoListGroupsService.addGroup(id);
+    if (todoListGroups) setGroups(todoListGroups.groups);
   }
 
-  function handleClickRemoveGroup(groupId) {
-    todoListGroupsService.removeGroup(id, groupId);
-    setGroups(todoListGroupsRef.current.groups);
+  async function handleClickRemoveGroup(groupId) {
+    const todoListGroups = await todoListGroupsService.removeGroup(id, groupId);
+    if (todoListGroups) setGroups(todoListGroups.groups);
   }
 
-  function handleClickRemoveAllTodoList() {
-    todoListGroupsService.removeAllGroups(id);
-    setGroups(todoListGroupsRef.current.groups);
+  async function handleClickRemoveAllTodoList() {
+    const todoListGroups = await todoListGroupsService.removeAllGroups(id);
+    if (todoListGroups) setGroups(todoListGroups.groups);
   }
 
-  function handleClickRestoreAllRemoved() {
-    todoListGroupsService.restoreAllRemovedGroups(id);
-    setGroups(todoListGroupsRef.current.groups);
+  async function handleClickRestoreAllRemoved() {
+    const todoListGroups = await todoListGroupsService.restoreAllRemovedGroups(
+      id
+    );
+    if (todoListGroups) setGroups(todoListGroups.groups);
   }
 
-  function handleClickRestoreLastRemoved() {
-    todoListGroupsService.restoreLastRemovedGroup(id);
-    setGroups(todoListGroupsRef.current.groups);
+  async function handleClickRestoreLastRemoved() {
+    const todoListGroups = await todoListGroupsService.restoreLastRemovedGroup(
+      id
+    );
+    if (todoListGroups) setGroups(todoListGroups.groups);
   }
 
   return (

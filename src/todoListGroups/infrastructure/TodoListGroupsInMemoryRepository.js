@@ -4,19 +4,19 @@ import { TodoListGroupsRepository } from "../domain/repositories/TodoListGroupsR
 export class TodoListGroupsInMemoryRepository {
   store = new Map();
 
-  save(todoListGroups) {
+  async save(todoListGroups) {
     this.store.set(todoListGroups.id, todoListGroups);
   }
 
-  findAll() {
+  async findAll() {
     return Array.from(this.store.values());
   }
 
-  findById(todoListGroupsId) {
+  async findById(todoListGroupsId) {
     return this.store.get(todoListGroupsId);
   }
 
-  removeById(todoListGroupsId) {
+  async removeById(todoListGroupsId) {
     this.store.delete(todoListGroupsId);
   }
 }

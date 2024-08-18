@@ -1,6 +1,6 @@
 export class TodoListRepository {
-  save(todoList) {}
-  findAll() {}
-  findById(todoListId) {}
-  removeById(todoListId) {}
+  async save(todoList) {}
+  async findAll() {}
+  async findById(todoListId) {}
+  async removeById(todoListId) {}
 }
