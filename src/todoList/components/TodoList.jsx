@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { TodoListContext } from "../contexts/TodoListContext";
 
 function Todo({
   title = "",
@@ -26,7 +27,8 @@ function Todo({
   );
 }
 
-export function TodoList({ id, todoListService }) {
+export function TodoList({ id }) {
+  const { todoListService } = useContext(TodoListContext);
   const [todos, setTodos] = useState([]);
 
   // init

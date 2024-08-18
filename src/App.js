@@ -6,6 +6,8 @@ import { TodoListService } from "./todoList/services/TodoListService";
 import { TodoListGroups } from "./todoListGroups/components/TodoListGroups";
 import { TodoListGroupsIndexedDBRepository } from "./todoListGroups/infrastructure/TodoListGroupsIndexedDBRepository";
 import { TodoListGroupsService } from "./todoListGroups/services/TodoListGroupsService";
+import { TodoListGroupsContext } from "./todoListGroups/contexts/TodoListGroupsContext";
+import { TodoListContext } from "./todoList/contexts/TodoListContext";
 
 // repositories
 // const todoListRepository = new TodoListInMemoryRepository();
@@ -38,11 +40,16 @@ const openDBPromise = IndexedDB.openDB("myDatabase", 1, {
   todoListGroupsRepository.db = db;
 });
 
+const services = {
+  todoListService,
+  todoListGroupsService,
+};
+
 function App() {
   const [todoListGroups, setTodoListGroups] = useState();
 
   async function init() {
-    await openDBPromise
+    await openDBPromise;
     todoListGroupsService.ensureFirstOne().then(setTodoListGroups);
   }
 
@@ -51,15 +58,13 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      {todoListGroups && (
-        <TodoListGroups
-          id={todoListGroups.id}
-          todoListService={todoListService}
-          todoListGroupsService={todoListGroupsService}
-        />
-      )}
-    </div>
+    <TodoListGroupsContext.Provider value={services}>
+      <TodoListContext.Provider value={services}>
+        <div className="App">
+          {todoListGroups && <TodoListGroups id={todoListGroups.id} />}
+        </div>
+      </TodoListContext.Provider>
+    </TodoListGroupsContext.Provider>
   );
 }
 

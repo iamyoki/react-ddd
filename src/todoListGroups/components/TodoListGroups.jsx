@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TodoList } from "../../todoList/components/TodoList";
+import { TodoListGroupsContext } from "../contexts/TodoListGroupsContext";
 
-export function TodoListGroups({ id, todoListGroupsService, todoListService }) {
+export function TodoListGroups({ id }) {
+  const { todoListService, todoListGroupsService } = useContext(
+    TodoListGroupsContext
+  );
   const [groups, setGroups] = useState([]);
 
   // initial from repository
