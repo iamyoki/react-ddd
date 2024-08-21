@@ -1,0 +1,15 @@
+.dark {
+  color-scheme: dark;
+  --primary: var(--blue);
+  --bg: var(--black-100);
+  --text: var(--white-100);
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    color-scheme: dark;
+    --primary: var(--blue);
+    --bg: var(--black-100);
+    --text: var(--white-100);
+  }
+}

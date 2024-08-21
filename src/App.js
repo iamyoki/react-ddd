@@ -8,6 +8,7 @@ import { TodoListGroupsIndexedDBRepository } from "./todoListGroups/infrastructu
 import { TodoListGroupsService } from "./todoListGroups/services/TodoListGroupsService";
 import { TodoListGroupsContext } from "./todoListGroups/contexts/TodoListGroupsContext";
 import { TodoListContext } from "./todoList/contexts/TodoListContext";
+import { ThemeSwitcher } from "./themeSwitcher/ThemeSwitcher";
 
 // repositories
 // const todoListRepository = new TodoListInMemoryRepository();
@@ -61,6 +62,7 @@ function App() {
     <TodoListGroupsContext.Provider value={services}>
       <TodoListContext.Provider value={services}>
         <div className="App">
+          <ThemeSwitcher />
           {todoListGroups && <TodoListGroups id={todoListGroups.id} />}
         </div>
       </TodoListContext.Provider>
